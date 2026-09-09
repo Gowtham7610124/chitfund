@@ -1,0 +1,17 @@
+
+> chit@0.0.0 build
+> tsc -b && vite build ; echo EXIT:0; type buildlog.txt
+
+file:///E:/Chit/node_modules/vite/dist/node/cli.js:387
+		if (maximumArgsCount < this.cli.args.length) throw new CACError(`Unused args: ${this.cli.args.slice(maximumArgsCount).map((arg) => `\`${arg}\``).join(", ")}`);
+		                                                   ^
+
+CACError: Unused args: `echo`, `EXIT:0;`, `type`, `buildlog.txt`
+    at Command.checkUnusedArgs (file:///E:/Chit/node_modules/vite/dist/node/cli.js:387:54)
+    at CAC.runMatchedCommand (file:///E:/Chit/node_modules/vite/dist/node/cli.js:609:11)
+    at CAC.parse (file:///E:/Chit/node_modules/vite/dist/node/cli.js:562:17)
+    at file:///E:/Chit/node_modules/vite/dist/node/cli.js:833:5
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+
+Node.js v24.18.0
