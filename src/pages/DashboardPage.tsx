@@ -119,7 +119,7 @@ export const DashboardPage = () => {
 
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <h3 className="text-lg font-semibold text-slate-900">Collection agent summary</h3>
-          <div className="mt-5 space-y-4">
+          <div className="mt-5 max-h-[320px] space-y-4 overflow-y-auto pr-1">
             {collectionAgentSummary.map((agent) => (
               <div key={agent.name} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                 <div className="flex items-center justify-between">
@@ -149,9 +149,9 @@ export const DashboardPage = () => {
             <h3 className="text-lg font-semibold text-slate-900">Recent payments</h3>
             <button type="button" className="text-sm text-sky-600">View all</button>
           </div>
-          <div className="overflow-x-auto">
+          <div className="max-h-[320px] overflow-auto">
             <table className="min-w-full text-left text-sm">
-              <thead>
+              <thead className="sticky top-0 z-10 bg-white">
                 <tr className="border-b border-slate-200 text-slate-500">
                   <th className="pb-3 pr-4 font-medium">Receipt No</th>
                   <th className="pb-3 pr-4 font-medium">Customer</th>
@@ -182,7 +182,7 @@ export const DashboardPage = () => {
             <h3 className="text-lg font-semibold text-slate-900">Upcoming auctions</h3>
             <button type="button" className="text-sm text-sky-600">View all</button>
           </div>
-          <div className="space-y-4">
+          <div className="max-h-[320px] space-y-4 overflow-y-auto pr-1">
             {upcomingAuctions.map((auction) => (
               <div key={auction.id} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                 <div className="flex items-center justify-between">
