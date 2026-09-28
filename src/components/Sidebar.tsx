@@ -1,7 +1,9 @@
 import {
+  ArrowLeftRight,
   BadgeDollarSign,
   BookOpen,
   BriefcaseBusiness,
+  Building2,
   ClipboardCheck,
   CreditCard,
   FileText,
@@ -10,12 +12,13 @@ import {
   LogOut,
   Megaphone,
   Receipt,
+  Settings,
   ShieldCheck,
   ShoppingBag,
   Users,
   Wallet,
+  type LucideIcon,
 } from 'lucide-react'
-import type { ComponentType } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
@@ -26,15 +29,9 @@ interface SidebarProps {
 
 interface NavItem {
   label: string
-  icon: ComponentType<{ className?: string }>
+  icon: LucideIcon
   path: string
 }
-
-const SettingsIcon = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className ?? 'h-4 w-4'}>
-    <path d="M12 3v2.2M12 18.8V21M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M3 12h2.2M18.8 12H21M4.9 19.1l1.6-1.6M17.5 6.5l1.6-1.6M12 7.2a4.8 4.8 0 1 1 0 9.6 4.8 4.8 0 0 1 0-9.6Z" />
-  </svg>
-)
 
 const navGroups: Array<{ title: string; items: NavItem[] }> = [
   { title: 'Overview', items: [{ label: 'Dashboard', icon: LayoutGrid, path: '/dashboard' }] },
@@ -42,9 +39,10 @@ const navGroups: Array<{ title: string; items: NavItem[] }> = [
     { label: 'Customers', icon: Users, path: '/customers' },
     { label: 'Chit Schemes', icon: BookOpen, path: '/chit-schemes' },
     { label: 'Chit Groups', icon: ShoppingBag, path: '/chit-groups' },
+    { label: 'Members', icon: Users, path: '/members' },
     { label: 'Installments', icon: ClipboardCheck, path: '/installments' },
     { label: 'Payments', icon: CreditCard, path: '/payments' },
-    { label: 'Chit Booking', icon: BadgeDollarSign, path: '/chit-booking' },
+    { label: 'Auctions', icon: BadgeDollarSign, path: '/auctions' },
     { label: 'Payouts', icon: Wallet, path: '/payouts' },
     { label: 'Receipts', icon: Receipt, path: '/receipts' },
   ]},
@@ -52,11 +50,13 @@ const navGroups: Array<{ title: string; items: NavItem[] }> = [
     { label: 'KYC / Documents', icon: FileText, path: '/kyc' },
     { label: 'Agents', icon: ShieldCheck, path: '/agents' },
     { label: 'Staff & Users', icon: BriefcaseBusiness, path: '/staff' },
+    { label: 'Offices', icon: Building2, path: '/offices' },
     { label: 'Reports', icon: Gauge, path: '/reports' },
+    { label: 'Expenses', icon: ArrowLeftRight, path: '/expenses' },
     { label: 'Accounts', icon: Wallet, path: '/accounts' },
     { label: 'Notifications', icon: Megaphone, path: '/notifications' },
     { label: 'Audit Logs', icon: ClipboardCheck, path: '/audit-logs' },
-    { label: 'Settings', icon: SettingsIcon, path: '/settings' },
+    { label: 'Settings', icon: Settings, path: '/settings' },
   ]},
 ]
 
@@ -65,7 +65,7 @@ export const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
   const navigate = useNavigate()
 
   return (
-    <aside className={`h-screen shrink-0 overflow-y-auto border-r border-slate-200 bg-slate-950 text-slate-200 transition-all duration-200 ${collapsed ? 'w-20' : 'w-72'}`}>
+    <aside className={`border-r border-slate-200 bg-slate-950 text-slate-200 transition-all duration-200 ${collapsed ? 'w-20' : 'w-72'}`}>
       <div className="flex h-20 items-center justify-between border-b border-slate-800 px-4">
         <div className={`flex items-center gap-3 ${collapsed ? 'justify-center' : ''}`}>
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-500 font-bold text-white">C</div>

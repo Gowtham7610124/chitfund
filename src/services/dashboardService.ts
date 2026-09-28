@@ -80,7 +80,6 @@ export const getCollectionSummary = () => {
 }
 
 export const getCollectionAgentSummary = () => {
-  const customerMap = new Map(mockCustomers.map((customer) => [customer.id, customer.assignedAgent]))
   const agentInfo = mockAgents
     .filter((agent) => agent.status === 'Active')
     .map((agent) => {
