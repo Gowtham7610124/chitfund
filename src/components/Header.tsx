@@ -11,19 +11,19 @@ export const Header = ({ collapsed, onToggleSidebar }: HeaderProps) => {
 
   return (
     <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur-xl">
-      <div className="flex h-20 items-center justify-between gap-4 px-6">
-        <div className="flex items-center gap-3">
+      <div className="flex h-16 items-center justify-between gap-3 px-3 sm:h-20 sm:px-4 lg:px-6">
+        <div className="flex min-w-0 items-center gap-3">
           <button
             type="button"
             onClick={onToggleSidebar}
-            className="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-100"
+            className="rounded-lg border border-slate-200 bg-white p-2 text-slate-600 hover:bg-slate-100 md:p-2.5"
             aria-label="Toggle sidebar"
           >
             <span className="text-lg">☰</span>
           </button>
-          <div className={`transition-all duration-200 ${collapsed ? 'hidden md:block' : 'block'}`}>
-            <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Chit Fund</p>
-            <h1 className="text-lg font-semibold text-slate-900">Operations Dashboard</h1>
+          <div className={`min-w-0 transition-all duration-200 ${collapsed ? 'hidden md:block' : 'block'}`}>
+            <p className="hidden text-[10px] uppercase tracking-[0.2em] text-slate-400 sm:block">Chit Fund</p>
+            <h1 className="truncate text-sm font-semibold text-slate-900 sm:text-base lg:text-lg">Operations Dashboard</h1>
           </div>
         </div>
 
@@ -39,7 +39,7 @@ export const Header = ({ collapsed, onToggleSidebar }: HeaderProps) => {
           </label>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <button type="button" className="rounded-xl border border-slate-200 bg-slate-50 p-2 text-slate-600 hover:bg-slate-100" aria-label="Settings">
             <Settings className="h-4 w-4" />
           </button>
@@ -47,15 +47,15 @@ export const Header = ({ collapsed, onToggleSidebar }: HeaderProps) => {
             <Bell className="h-4 w-4" />
             <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-rose-500" />
           </button>
-          <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-sky-100 font-semibold text-sky-700">
+          <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-2 py-1.5 sm:gap-3 sm:px-2.5 sm:py-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sky-100 text-xs font-semibold text-sky-700 sm:h-9 sm:w-9">
               {user?.avatar ?? 'U'}
             </div>
             <div className="hidden sm:block">
               <p className="text-sm font-medium text-slate-800">{user?.name ?? 'Guest User'}</p>
-              <p className="text-xs text-slate-500">{user?.role.replace('_', ' ') ?? 'User'}</p>
+              <p className="text-[11px] text-slate-500">{user?.role.replace('_', ' ') ?? 'User'}</p>
             </div>
-            <ShieldCheck className="h-4 w-4 text-slate-400" />
+            <ShieldCheck className="hidden h-4 w-4 text-slate-400 sm:block" />
           </div>
         </div>
       </div>

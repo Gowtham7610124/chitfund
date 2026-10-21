@@ -24,7 +24,9 @@ import { useAuth } from '../context/AuthContext'
 
 interface SidebarProps {
   collapsed: boolean
+  mobileOpen?: boolean
   onToggle: () => void
+  onClose?: () => void
 }
 
 interface NavItem {
@@ -37,8 +39,8 @@ const navGroups: Array<{ title: string; items: NavItem[] }> = [
   { title: 'Overview', items: [{ label: 'Dashboard', icon: LayoutGrid, path: '/dashboard' }] },
   { title: 'Management', items: [
     { label: 'Customers', icon: Users, path: '/customers' },
-    { label: 'Chit Schemes', icon: BookOpen, path: '/chit-schemes' },
     { label: 'Chit Groups', icon: ShoppingBag, path: '/chit-groups' },
+    { label: 'Chit Schemes', icon: BookOpen, path: '/chit-schemes' },
     { label: 'Members', icon: Users, path: '/members' },
     { label: 'Installments', icon: ClipboardCheck, path: '/installments' },
     { label: 'Payments', icon: CreditCard, path: '/payments' },
@@ -60,23 +62,45 @@ const navGroups: Array<{ title: string; items: NavItem[] }> = [
   ]},
 ]
 
-export const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
+export const Sidebar = ({ collapsed, mobileOpen = false, onToggle, onClose }: SidebarProps) => {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
+  const handleSignOut = () => {
+    logout()
+    onClose?.()
+    navigate('/login')
+  }
+
   return (
-    <aside className={`border-r border-slate-200 bg-slate-950 text-slate-200 transition-all duration-200 ${collapsed ? 'w-20' : 'w-72'}`}>
+    <aside
+      className={`flex h-screen shrink-0 flex-col border-r border-slate-200 bg-slate-950 text-slate-200 transition-all duration-200 ${
+        collapsed ? 'w-20 md:w-20' : 'w-[82vw] sm:w-72 md:w-72'
+      } ${mobileOpen ? 'shadow-2xl' : ''}`}
+    >
       <div className="flex h-20 items-center justify-between border-b border-slate-800 px-4">
         <div className={`flex items-center gap-3 ${collapsed ? 'justify-center' : ''}`}>
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-500 font-bold text-white">C</div>
           {!collapsed && <div><p className="text-lg font-semibold text-white">CHIT</p><p className="text-[10px] uppercase tracking-[0.25em] text-slate-400">Admin</p></div>}
         </div>
-        <button type="button" onClick={onToggle} className="rounded-lg p-2 text-slate-300 hover:bg-slate-800" aria-label="Collapse sidebar">
+        <button
+          type="button"
+          onClick={() => {
+            if (window.innerWidth < 768) {
+              onClose?.()
+              return
+            }
+
+            onToggle()
+          }}
+          className="rounded-lg p-2 text-slate-300 hover:bg-slate-800"
+          aria-label="Collapse sidebar"
+        >
           {collapsed ? '→' : '←'}
         </button>
       </div>
 
-      <nav className="space-y-6 px-3 py-5">
+      <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-5">
         {navGroups.map((group) => (
           <div key={group.title} className="space-y-2">
             {!collapsed && <p className="px-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-400">{group.title}</p>}
@@ -86,6 +110,7 @@ export const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
                 <NavLink
                   key={item.path}
                   to={item.path}
+                  onClick={() => onClose?.()}
                   className={({ isActive }) =>
                     `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition ${
                       isActive ? 'bg-sky-500/20 text-white shadow-inner ring-1 ring-sky-500/30' : 'text-slate-300 hover:bg-slate-800 hover:text-white'
@@ -114,10 +139,7 @@ export const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
         {!collapsed && (
           <button
             type="button"
-            onClick={() => {
-              logout()
-              navigate('/login')
-            }}
+            onClick={handleSignOut}
             className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-200 hover:border-slate-500"
           >
             <LogOut className="h-4 w-4" />

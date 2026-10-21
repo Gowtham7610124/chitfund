@@ -1,11 +1,14 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { AppLayout } from '../layouts/AppLayout'
+import { AddCustomerPage } from '../pages/AddCustomerPage'
 import { AgentsPage } from '../pages/AgentsPage'
 import { AuctionsPage } from '../pages/AuctionsPage'
 import { AuditLogsPage } from '../pages/AuditLogsPage'
+import { ChitGroupDetailPage } from '../pages/ChitGroupDetailPage'
 import { ChitGroupsPage } from '../pages/ChitGroupsPage'
 import { ChitSchemesPage } from '../pages/ChitSchemesPage'
+import { CreateChitGroupPage } from '../pages/CreateChitGroupPage'
 import { CustomerDetailPage } from '../pages/CustomerDetailPage'
 import { CustomersPage } from '../pages/CustomersPage'
 import { DashboardPage } from '../pages/DashboardPage'
@@ -52,9 +55,14 @@ export const AppRoutes = () => (
       <Route index element={<Navigate to="/dashboard" replace />} />
       <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/customers" element={<CustomersPage />} />
+      <Route path="/customers/new" element={<AddCustomerPage />} />
+      <Route path="/customers/:id/edit" element={<AddCustomerPage />} />
       <Route path="/customers/:id" element={<CustomerDetailPage />} />
-      <Route path="/chit-schemes" element={<ChitSchemesPage />} />
       <Route path="/chit-groups" element={<ChitGroupsPage />} />
+      <Route path="/chit-groups/new" element={<CreateChitGroupPage />} />
+      <Route path="/chit-groups/:id" element={<ChitGroupDetailPage />} />
+      <Route path="/chit-groups/:id/edit" element={<CreateChitGroupPage />} />
+      <Route path="/chit-schemes" element={<ChitSchemesPage />} />
       <Route path="/members" element={<CustomersPage />} />
       <Route path="/installments" element={<InstallmentsPage />} />
       <Route path="/payments" element={<PaymentsPage />} />

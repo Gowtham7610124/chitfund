@@ -1,31 +1,26 @@
-import { Search, Plus } from 'lucide-react'
-import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Eye, Pencil, Plus, Trash2 } from 'lucide-react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Badge } from '../components/Badge'
-import { mockGroups } from '../mock/data'
+import { deleteChitGroup, getChitGroups } from '../services/chitGroupService'
+import type { ChitGroup } from '../types'
 import { formatCurrency } from '../utils/currency'
 import { formatDate } from '../utils/date'
 
 export const ChitGroupsPage = () => {
-  const [query, setQuery] = useState('')
-  const [page, setPage] = useState(1)
-  const pageSize = 6
+  const navigate = useNavigate()
+  const [groups, setGroups] = useState<ChitGroup[]>(() => getChitGroups())
 
-  const filteredGroups = useMemo(() => {
-    const value = query.trim().toLowerCase()
-    if (!value) return mockGroups
+  const handleDelete = (id: string) => {
+    const group = groups.find((item) => item.id === id)
+    if (!group) return
 
-    return mockGroups.filter(
-      (group) =>
-        group.id.toLowerCase().includes(value) ||
-        group.schemeId.toLowerCase().includes(value) ||
-        group.officeId.toLowerCase().includes(value) ||
-        group.status.toLowerCase().includes(value),
-    )
-  }, [query])
+    const confirmed = window.confirm(`Delete ${group.id}?`)
+    if (!confirmed) return
 
-  const totalPages = Math.max(1, Math.ceil(filteredGroups.length / pageSize))
-  const visibleGroups = filteredGroups.slice((page - 1) * pageSize, page * pageSize)
+    deleteChitGroup(id)
+    setGroups((current) => current.filter((item) => item.id !== id))
+  }
 
   return (
     <div className="space-y-6">
@@ -34,26 +29,14 @@ export const ChitGroupsPage = () => {
           <p className="text-sm uppercase tracking-[0.2em] text-slate-400">Chit groups</p>
           <h2 className="mt-2 text-3xl font-semibold text-slate-900">Group management</h2>
         </div>
-        <Link to="/chit-groups/new" className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-slate-800">
+        <button
+          type="button"
+          onClick={() => navigate('/chit-groups/new')}
+          className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white"
+        >
           <Plus className="h-4 w-4" />
           Create group
-        </Link>
-      </div>
-
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <label className="relative block max-w-md">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          <input
-            type="text"
-            value={query}
-            onChange={(event) => {
-              setQuery(event.target.value)
-              setPage(1)
-            }}
-            placeholder="Search group, scheme or office"
-            className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm text-slate-700 outline-none focus:border-sky-400 focus:bg-white"
-          />
-        </label>
+        </button>
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -65,34 +48,61 @@ export const ChitGroupsPage = () => {
                 <th className="px-5 py-3 font-medium">Scheme</th>
                 <th className="px-5 py-3 font-medium">Office</th>
                 <th className="px-5 py-3 font-medium">Start date</th>
+                <th className="px-5 py-3 font-medium">End date</th>
                 <th className="px-5 py-3 font-medium">Members</th>
-                <th className="px-5 py-3 font-medium">Value</th>
+                <th className="px-5 py-3 font-medium">Actual value</th>
                 <th className="px-5 py-3 font-medium">Status</th>
+                <th className="px-5 py-3 font-medium text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {visibleGroups.map((group) => (
-                <tr key={group.id} className="border-t border-slate-200">
+              {groups.map((group) => (
+                <tr key={group.id} className="border-t border-slate-200 align-top">
                   <td className="px-5 py-4 font-medium text-slate-900">{group.id}</td>
                   <td className="px-5 py-4 text-slate-700">{group.schemeId}</td>
                   <td className="px-5 py-4 text-slate-700">{group.officeId}</td>
                   <td className="px-5 py-4 text-slate-700">{formatDate(group.startDate)}</td>
+                  <td className="px-5 py-4 text-slate-700">{formatDate(group.endDate)}</td>
                   <td className="px-5 py-4 text-slate-700">{group.membersCount}</td>
                   <td className="px-5 py-4 text-slate-700">{formatCurrency(group.totalValue)}</td>
-                  <td className="px-5 py-4"><Badge label={group.status} tone={group.status === 'Active' ? 'success' : 'warning'} /></td>
+                  <td className="px-5 py-4">
+                    <Badge
+                      label={group.status}
+                      tone={group.status === 'Active' ? 'success' : group.status === 'Completed' ? 'neutral' : 'warning'}
+                    />
+                  </td>
+                  <td className="px-5 py-4">
+                    <div className="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={() => navigate(`/chit-groups/${group.id}`)}
+                        className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                        View
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => navigate(`/chit-groups/${group.id}/edit`)}
+                        className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(group.id)}
+                        className="inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-rose-50 px-2.5 py-1.5 text-xs font-medium text-rose-700 hover:bg-rose-100"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                        Delete
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-        <span className="text-sm text-slate-500">Showing {visibleGroups.length} of {filteredGroups.length} groups</span>
-        <div className="flex items-center gap-2">
-          <button type="button" onClick={() => setPage((value) => Math.max(1, value - 1))} disabled={page === 1} className="rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-600 disabled:cursor-not-allowed disabled:opacity-50">Previous</button>
-          <span className="text-sm font-medium text-slate-700">Page {page} / {totalPages}</span>
-          <button type="button" onClick={() => setPage((value) => Math.min(totalPages, value + 1))} disabled={page === totalPages} className="rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-600 disabled:cursor-not-allowed disabled:opacity-50">Next</button>
         </div>
       </div>
     </div>
